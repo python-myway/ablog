@@ -1,0 +1,99 @@
+{% from 'bootstrap/nav.html' import render_nav_item %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}{% endblock title %} - ABLOG </title>
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/black_swan.min.css') }}"
+              type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+    {% endblock head %}
+</head>
+<body>
+{% block nav %}
+    {% if current_user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="{{ url_for('post.home') }}">ABLOG</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item {{ 'active' if request.endpoint|be_active('home')}}">
+                    <a class="nav-link" href="{{ url_for('post.home')}}">Home</a>
+                </li>
+                <li class="nav-item {{ 'active' if request.endpoint|be_active('user')}}">
+                    <a class="nav-link" href="{{ url_for('user.user', user_id=current_user.id)}}">About Me</a>
+                </li>
+                <li class="nav-item dropdown {{ 'active' if request.endpoint|be_active('new') }}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    New
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                        <a class="dropdown-item" href="{{ url_for('post.new_post') }}">Post</a>
+                        <a class="dropdown-item" href="{{ url_for('post.new_category') }}">Category</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown {{ 'active' if request.endpoint|be_active('manage') }}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Manage
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                        <a class="dropdown-item" href="{{ url_for('post.manage_post') }}">Post</a>
+                        <a class="dropdown-item" href="{{ url_for('post.manage_category') }}">Category</a>
+                    </div>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" method="post" action="{{ url_for('post.search') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+            <ul class="navbar-nav justify-content-end">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ current_user.username }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown3">
+                        <a class="dropdown-item" href="{{ url_for('auth.logout', next=request.full_path) }}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {% endif %}
+{% endblock nav %}
+
+<main class="container">
+    {% for message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{ message[0] }}" role="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message[1] }}
+        </div>
+    {% endfor %}
+    {% block content %}{% endblock content %}
+    {% block footer %}
+        <footer>
+            <p class="float-left">
+                <small> &copy; 2019 <a href="https://python-myway.github.io/" target="_blank">Misaki</a> -
+                    <a href="https://github.com/python-myway" target="_blank">GitHub</a>
+                </small>
+            </p>
+        </footer>
+    {% endblock footer %}
+</main>
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
+{% endblock %}
+</body>
+</html>
