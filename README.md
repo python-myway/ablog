@@ -6,7 +6,7 @@
 
 ## Introduction
 
-~~Ablog is a Content Management Framework written in Python.~~:stuck_out_tongue_winking_eye:
+~~Ablog is a Content Management Systerm written in Python.~~:stuck_out_tongue_winking_eye:
 
 Ablog is a lightweight framework to build blogs for now maybe forever.
 
@@ -45,6 +45,12 @@ flask run
 
 ```
 
+## Deploy
+
+> NOTE: the dir `deploy` have all the configs.
+
+- This [blog](https://python-myway.github.io/2017/09/16/%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8/) will teach you how to deploy.
+
 ## Features(some are to be implemented)
 
 - :ballot_box_with_check: signup/login
@@ -56,6 +62,7 @@ flask run
 - :ballot_box_with_check: manage personal profile
 - :ballot_box_with_check: responsive website design
 - :ballot_box_with_check: support rich text
+- :ballot_box_with_check: deploy with Nginx and uwsgi
 - :black_square_button: the search button
 - :black_square_button: signup confirm email
 - :black_square_button: user profile
@@ -69,4 +76,8 @@ flask run
 - it's better to write a .flaskenv file in this dir, then put `FLASK_ENV=development` in the file or you can just type `export FLASK_ENV=development` in the cmd.
 - delete a category won't all articles tied in it, these articles will belong to `Category(name=defalut, author=superadmin)`.
 
-## 
+## Thanks for
+
+- [Flask web开发实战](https://github.com/greyli/bluelog)
+
+- [Flask web开发](https://github.com/miguelgrinberg/flasky)
