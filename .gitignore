@@ -5,3 +5,4 @@ __pycache__
 data-dev.db
 logs/
 venv
+todo.md

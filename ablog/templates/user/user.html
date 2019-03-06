@@ -5,9 +5,8 @@
 
 {% block content %}
 <div class="page-header">
-    <img class="img-rounded profile-thumbnail" src="#">
     <div class="profile-header">
-        <h3 class="text-primary" >{{ user.username }}</h1>
+        <h1 class="display-3" >{{ user.username }}</h1>
         <p>Member since {{ moment(user.create_time).format('L') }}. Last seen {{ moment(user.last_seen).fromNow() }}.</p>
         <p>{{ user.posts.count() }} blog posts. {{ user.comments.count() }} comments.</p>
         <p>

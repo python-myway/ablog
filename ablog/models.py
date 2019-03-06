@@ -82,7 +82,7 @@ class Category(db.Model):
     posts = db.relationship('Post', back_populates='category')
 
     def delete(self):
-        default_category = Category.query.get(1)
+        default_category = Category.query.filter_by(name=default).first()
         posts = self.posts[:]
         for post in posts:
             post.category = default_category

@@ -17,16 +17,19 @@
         {{ message[1] }}
     </div>
     {% endfor %}
-    <div class="jumbotron">
-        <h1 class="display-4">Hello, Stranger</h1>
-        <p class="lead">This is a simple blog site</p>
-        <hr class="my-4">
-        <p>It uses Flask to build everything.</p>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login')}}" role="button">Login</a>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup')}}" role="button">Signup</a><br>
-        <p>The source <a href="https://github.com/python-myway" target="_blank">GitHub</a>
-        </p>
-    </div>
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Hello, Stranger</h1>
+            <p class="lead text-muted">This is a simple blog systerm site.</p>
+            <p class="lead text-muted" >Ablog is not finished, more features to be implemented.</p>
+            <p class="lead text-muted" >It is powered by <a href="https://www.python.org/" rel="nofollow" target="_blank">Python</a> and <a href="http://flask.pocoo.org/" rel="nofollow" target="_blank">Flask.</a></p>
+            <p class="lead text-muted">The source code <a href="https://github.com/python-myway/ablog" target="_blank">GitHub.</a></p>
+            <p>
+                <a href="{{ url_for('auth.login')}}" class="btn btn-primary my-2">Login</a>
+                <a href="{{ url_for('auth.signup')}}" class="btn btn-secondary my-2">Signup</a>
+            </p>
+        </div>
+    </section>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>

@@ -2,7 +2,7 @@
 
 ## Preview
 
-![one picture here]()
+![preview](ablog/static/preview.jpg)
 
 ## Introduction
 
@@ -67,5 +67,6 @@ flask run
 
 - all configs are located in ablog/settings.py.
 - it's better to write a .flaskenv file in this dir, then put `FLASK_ENV=development` in the file or you can just type `export FLASK_ENV=development` in the cmd.
+- delete a category won't all articles tied in it, these articles will belong to `Category(name=defalut, author=superadmin)`.
 
 ## 

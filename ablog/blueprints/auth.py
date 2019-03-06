@@ -47,6 +47,6 @@ def signup():
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        flash('Signup successfully. Enjoy your day', 'info')
+        flash('Signup successfully. Enjoy your day.', 'info')
         return redirect(url_for('post.home'))
     return render_template('auth/signup.html', form=form)

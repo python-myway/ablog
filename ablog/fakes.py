@@ -10,6 +10,11 @@ fake = Faker()
 
 
 def fake_user(count=5):
+    super_admin = User(username='superadmin', 
+            email='superadmin@super163.com', 
+            password='superadmin')
+    db.session.add(super_admin)
+    db.session.commit()
     for i in range(count):
         admin = User(
             username='admin{}'.format(str(i)),
@@ -24,7 +29,8 @@ def fake_user(count=5):
 
 
 def fake_categories(count=10):
-    category = Category(name='Default')
+    super_admin = User.query.filter_by(username='superadmin').first()
+    category = Category(name='default', author=super_admin)
     db.session.add(category)
     for _ in range(count):
         category = Category(name=fake.word(), author=User.query.get(random.randint(1, User.query.count())))
