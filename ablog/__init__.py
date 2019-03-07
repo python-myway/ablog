@@ -12,9 +12,9 @@ from ablog.blueprints.user import user_bp
 from ablog.blueprints.auth import auth_bp
 from ablog.blueprints.post import post_bp
 from ablog.extensions import bootstrap, db, login_manager, csrf, ckeditor, mail, moment, toolbar, migrate
-from ablog.models import User, Post, Category, Comment
+from ablog.models import User, Post, Category, Comment, ElaPost
 from ablog.settings import config
-from ablog.utils import be_active, is_follow
+from ablog.utils import be_active, is_follow, ela_client
 
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -166,6 +166,10 @@ def register_commands(app):
         fake_comments(comment)
 
         click.echo('Done.')
+
+    @app.cli.command()
+    def initela():
+        ElaPost.init(using=ela_client) 
 
 
 def register_request_handlers(app):

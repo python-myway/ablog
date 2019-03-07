@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from elasticsearch_dsl import Document, Date, Integer, Keyword, Text, Boolean
 
 from ablog.extensions import db
 
@@ -114,3 +115,11 @@ class Comment(db.Model):
     post = db.relationship('Post', back_populates='comments')
     replies = db.relationship('Comment', back_populates='replied', cascade='all, delete-orphan')
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
+
+
+class ElaPost(Document):
+    title = Text()
+    body = Text()
+
+    class Index:
+        name = 'elapost'

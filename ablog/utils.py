@@ -3,8 +3,11 @@ try:
 except ImportError:
     from urllib.parse import urlparse, urljoin
 
+from elasticsearch import Elasticsearch
 from flask import request, redirect, url_for, current_app
 from ablog.models import User
+
+ela_client = Elasticsearch()
 
 
 def is_safe_url(target):

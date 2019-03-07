@@ -35,6 +35,7 @@ mkdir logs
 touch ablog.log
 flask initdb
 flask fakedata
+flask initelas
 
 # then you can run locally.
 flask run
@@ -50,6 +51,7 @@ flask run
 > NOTE: the dir `deploy` have all the configs.
 
 - This [blog](https://python-myway.github.io/2017/09/16/%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8/) will teach you how to deploy.
+- [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started-install.html#_installation_example_with_tar)
 
 ## Features(some are to be implemented)
 
@@ -58,17 +60,17 @@ flask run
 - :ballot_box_with_check: add/delete comments
 - :ballot_box_with_check: enable/disable comment
 - :ballot_box_with_check: follow/unfollow bloger
-- :ballot_box_with_check: search article
+- :ballot_box_with_check: full text search(body and title)
 - :ballot_box_with_check: manage personal profile
 - :ballot_box_with_check: responsive website design
 - :ballot_box_with_check: support rich text
 - :ballot_box_with_check: deploy with Nginx and uwsgi
-- :black_square_button: the search button
 - :black_square_button: signup confirm email
 - :black_square_button: user profile
 - :black_square_button: hotest posts
 - :black_square_button: forget password / reset password button
 - :black_square_button: related articles recommended (based on similar category)
+- :black_square_button: enhance full text search
 
 ## Tips
 
