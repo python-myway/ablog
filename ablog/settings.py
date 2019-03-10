@@ -37,6 +37,9 @@ class BaseConfig(object):
     ABLOG_UPLOAD_PATH = os.path.join(basedir, 'uploads')
     ABLOG_ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
+    BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost/0'
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')

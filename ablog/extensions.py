@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
+from celery import Celery
 
 
 bootstrap = Bootstrap()
@@ -18,6 +19,7 @@ mail = Mail()
 moment = Moment()
 toolbar = DebugToolbarExtension()
 migrate = Migrate()
+celery_app = Celery()
 
 
 @login_manager.user_loader
