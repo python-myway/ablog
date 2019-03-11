@@ -13,7 +13,7 @@ from ablog.blueprints.auth import auth_bp
 from ablog.blueprints.post import post_bp
 from ablog.extensions import (
     bootstrap, db, login_manager, csrf, ckeditor, mail, 
-    moment, toolbar, migrate, celery_app
+    moment, toolbar, migrate
     )
 from ablog.models import User, Post, Category, Comment, ElaPost
 from ablog.settings import config
@@ -94,8 +94,8 @@ def register_extensions(app):
     moment.init_app(app)
     toolbar.init_app(app)
     migrate.init_app(app, db)
-    celery_app.conf.update(app.config)
-    celery_app.app = app
+    # celery_app.conf.update(app.config)
+    # celery_app.app = app
 
 
 def register_blueprints(app):
