@@ -7,6 +7,7 @@ from flask import Flask, render_template, request
 from flask_login import current_user
 from flask_sqlalchemy import get_debug_queries
 from flask_wtf.csrf import CSRFError
+from flask.cli import FlaskGroup
 
 from ablog.blueprints.user import user_bp
 from ablog.blueprints.auth import auth_bp
@@ -148,7 +149,6 @@ def register_commands(app):
             click.echo('Drop tables.')
         db.create_all()
         click.echo('Initialized database.')
-
 
     @app.cli.command()
     @click.option('--category', default=10, help='Quantity of categories, default is 10.')
