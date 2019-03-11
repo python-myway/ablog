@@ -8,15 +8,16 @@ from flask_login import current_user
 from flask_sqlalchemy import get_debug_queries
 from flask_wtf.csrf import CSRFError
 from flask.cli import FlaskGroup
+from sqlalchemy.sql import func, desc
 
 from ablog.blueprints.user import user_bp
 from ablog.blueprints.auth import auth_bp
 from ablog.blueprints.post import post_bp
 from ablog.extensions import (
-    bootstrap, db, login_manager, csrf, ckeditor, mail, 
+    bootstrap, login_manager, csrf, ckeditor, mail, 
     moment, toolbar, migrate
     )
-from ablog.models import User, Post, Category, Comment, ElaPost
+from ablog.models import db, User, Post, Category, Comment, ElaPost
 from ablog.settings import config
 from ablog.utils import be_active, is_follow, ela_client
 
@@ -115,8 +116,12 @@ def register_template_context(app):
     @app.context_processor
     def make_template_context():
         posts_latest = Post.query.order_by(Post.timestamp.desc()).limit(5).all()
-        # todo
-        posts_hotest = Post.query.order_by(Post.timestamp.desc()).limit(5).all()
+        stmt = db.session.query(Comment.post_id, func.count('*').\
+            label('comment_count')).group_by(Comment.post_id).subquery()
+        raw_hotest = db.session.query(Post, stmt.c.comment_count).\
+            outerjoin(stmt, Post.id==stmt.c.post_id).\
+            order_by(desc(stmt.c.comment_count)).limit(5).all()
+        posts_hotest = [post for (post, _) in raw_hotest]
         return dict(posts_hotest=posts_hotest, posts_latest=posts_latest)
 
 

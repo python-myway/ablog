@@ -4,7 +4,9 @@ from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 from ablog import db
-from ablog.models import User, Category, Post, Comment
+from ablog.models import User, Category, Post, Comment, ElaPost
+from ablog.utils import ela_client
+
 
 fake = Faker()
 
@@ -51,6 +53,8 @@ def fake_posts(count=50):
             author=User.query.get(random.randint(1, User.query.count())),
         )
         db.session.add(post)
+        elapost = ElaPost(meta={'id': post.id}, title=post.title, body=post.body)
+        elapost.save(using=ela_client)
     try:
         db.session.commit()
     except IntegrityError:

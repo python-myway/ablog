@@ -11,11 +11,23 @@
         <p>{{ user.posts.count() }} blog posts. {{ user.comments.count() }} comments.</p>
         <p>
             {% if current_user !=  user %}
-                {% if not current_user.is_following(user) %}
-                <a href="{{ url_for('user.follow', user_id=user.id, next=request.full_path) }}" class="btn btn-primary">Follow</a>
-                {% else %}
-                <a href="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path) }}" class="btn btn-danger">Unfollow</a>
-                {% endif %}
+            {% if not current_user|is_follow(user.username) %}
+                <form class="inline" method="post"
+                    action="{{ url_for('user.follow', user_id=user.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Follow
+                    </button>
+                </form>
+            {% else %}
+                <form class="inline" method="post"
+                    action="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Unfollow
+                    </button>
+                </form>
+            {% endif %}
             {% endif %}
             <a href="{{ url_for('user.followers', user_id=user.id) }}">Followers: <span class="badge">{{ user.follower.count() }}</span></a>
             <a href="{{ url_for('user.followed_by', user_id=user.id) }}">Following: <span class="badge">{{ user.followed.count() }}</span></a>

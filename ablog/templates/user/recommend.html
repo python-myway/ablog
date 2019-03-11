@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Recommend users{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>There are some users for you.</h1>
+    <h1>If you are intrested, Just Follow Them.</h1>
+</div>
+{% if users %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>No.</th>
+        <th>Username</th>
+        <th>Posts</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    {% for user in users %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td><a href="{{ url_for('user.user', user_id=user.id) }}">{{ user.username }}</a></td>
+        <td>{{ user.posts.count() }}</td>
+        <td>
+            {% if not current_user|is_follow(user.username) %}
+                <form class="inline" method="post"
+                    action="{{ url_for('user.follow', user_id=user.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Follow
+                    </button>
+                </form>
+            {% else %}
+                <form class="inline" method="post"
+                    action="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Unfollow
+                    </button>
+                </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<div class="tip"><h5>Sorry, No users yet.</h5></div>
+{% endif %}
+{% endblock %}

@@ -1,12 +1,18 @@
 # Ablog
 
+## DEMO
+
+This project is hosted on [pythonanywhere](http://misaki001.pythonanywhere.com/) now.
+
+- BUT `Elasticsearch` is not ready in `pythonanywhere`
+
 ## Preview
 
 ![preview](ablog/static/preview.jpg)
 
 ## Introduction
 
-~~Ablog is a Content Management Systerm written in Python.~~:stuck_out_tongue_winking_eye:
+~~Ablog is a Content Management System written in Python.~~:stuck_out_tongue_winking_eye:
 
 Ablog is a lightweight framework to build blogs for now maybe forever.
 
@@ -32,10 +38,10 @@ pip3 install -r requirements.txt
 
 # before you start the server, do some init.
 mkdir logs
-touch ablog.log
+touch logs/ablog.log
 flask initdb
+flask initela # must before fakedata
 flask fakedata
-flask initelas
 
 # then you can run locally.
 flask run
@@ -65,9 +71,9 @@ flask run
 - :ballot_box_with_check: responsive website design
 - :ballot_box_with_check: support rich text
 - :ballot_box_with_check: deploy with Nginx and uwsgi
+- :black_square_button: Message notice
 - :black_square_button: signup confirm email
 - :black_square_button: user profile
-- :black_square_button: hotest posts
 - :black_square_button: forget password / reset password button
 - :black_square_button: related articles recommended (based on similar category)
 - :black_square_button: enhance full text search

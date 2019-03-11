@@ -3,6 +3,7 @@ import os
 from flask import render_template, flash, redirect, url_for, request, current_app, Blueprint, send_from_directory
 from flask_login import login_required, current_user
 from flask_ckeditor import upload_success, upload_fail
+from sqlalchemy.sql import func, desc
 
 from ablog.forms import PostForm
 from ablog.models import db, Post, Category, Comment, User
@@ -25,7 +26,7 @@ def user(user_id):
                            pagination=pagination)
 
 
-@user_bp.route('/follow/<int:user_id>')
+@user_bp.route('/follow/<int:user_id>', methods=['POST'])
 @login_required
 def follow(user_id):
     user = User.query.get_or_404(user_id)
@@ -38,7 +39,7 @@ def follow(user_id):
     return redirect_back()
 
 
-@user_bp.route('/unfollow/<int:user_id>')
+@user_bp.route('/unfollow/<int:user_id>', methods=['POST'])
 @login_required
 def unfollow(user_id):
     user = User.query.get_or_404(user_id)
@@ -72,3 +73,17 @@ def followed_by(user_id):
     return render_template('user/followers.html', 
             user=user, pagination=pagination, page=page,
             followers=pagination.items, title="Followed by")
+
+
+@user_bp.route('/recommend')
+@login_required
+def recommend():
+        # just for now
+        stmt = db.session.query(Comment.post_id, func.count('*').\
+                label('comment_count')).group_by(Comment.post_id).subquery()
+        raw_hotest = db.session.query(Post, stmt.c.comment_count).\
+                outerjoin(stmt, Post.id==stmt.c.post_id).\
+                order_by(desc(stmt.c.comment_count)).limit(5).all()
+        posts_hotest_user = set([post.author for (post, _) in raw_hotest \
+                if post.author.id != current_user._get_current_object().id])
+        return render_template('user/recommend.html', users=posts_hotest_user)

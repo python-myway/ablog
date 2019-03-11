@@ -26,9 +26,21 @@
             Auther: <a href="">{{ post.author.username }}</a>
             {% if post.author != current_user %}
             {% if not current_user|is_follow(post.author.username) %}
-            <a href="{{ url_for('user.follow', user_id=post.author.id) }}" class="badge badge-primary">Follow</a>
+                <form class="inline" method="post"
+                    action="{{ url_for('user.follow', user_id=post.author.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Follow
+                    </button>
+                </form>
             {% else %}
-            <a href="{{ url_for('user.unfollow', user_id=post.author.id)}}" class="badge badge-danger">Unfollow</a>
+                <form class="inline" method="post"
+                    action="{{ url_for('user.unfollow', user_id=post.author.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Unfollow
+                    </button>
+                </form>
             {% endif %}
             {% endif %}
         </small>
