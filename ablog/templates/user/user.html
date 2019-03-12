@@ -7,8 +7,7 @@
 <div class="page-header">
     <div class="profile-header">
         <h1 class="display-3" >{{ user.username }}</h1>
-        <p>Member since {{ moment(user.create_time).format('L') }}. Last seen {{ moment(user.last_seen).fromNow() }}.</p>
-        <p>{{ user.posts.count() }} blog posts. {{ user.comments.count() }} comments.</p>
+        <h5>Join us since {{ moment(user.create_time).format('L') }}.</h5>
         <p>
             {% if current_user !=  user %}
             {% if not current_user|is_follow(user.username) %}
@@ -29,17 +28,86 @@
                 </form>
             {% endif %}
             {% endif %}
-            <a href="{{ url_for('user.followers', user_id=user.id) }}">Followers: <span class="badge">{{ user.follower.count() }}</span></a>
-            <a href="{{ url_for('user.followed_by', user_id=user.id) }}">Following: <span class="badge">{{ user.followed.count() }}</span></a>
-            {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
-            | <span class="label label-default">Follows you</span>
-            {% endif %}
         </p>
     </div>
 </div>
-<h3>Posts by {{ user.username }}</h3>
-{% include 'post/_posts.html' %}
-{% if posts %}
-    <div class="page-footer">{{ render_pagination(pagination) }}</div>
-{% endif %}
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-posts-tab" data-toggle="tab" href="#nav-posts" role="tab" aria-controls="nav-posts" aria-selected="true">Posts
+            <span class="badge badge-secondary">{{ user.posts.count() }}</span></a>
+        <a class="nav-item nav-link" id="nav-followers-tab" data-toggle="tab" href="#nav-followers" role="tab" aria-controls="nav-followers" aria-selected="false">Followers
+            <span class="badge badge-secondary">{{ user.follower.count() }}</span>
+        </a>
+        <a class="nav-item nav-link" id="nav-followings-tab" data-toggle="tab" href="#nav-followings" role="tab" aria-controls="nav-followings" aria-selected="false">Followings
+            <span class="badge badge-secondary">{{ user.followed.count() }}</span>
+        </a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-posts" role="tabpanel" aria-labelledby="nav-posts-tab">
+        {% include 'post/_posts.html' %}
+        {% if posts %}
+            <div class="page-footer">{{ render_pagination(pagination_posts) }}</div>
+        {% endif %}
+    </div>
+    <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">
+        {% if followers %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>No.</td>
+                    <td>Username</td>
+                    <td>Since</td>
+                </tr>
+            </thead>
+            {% for follow in followers %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <a href="{{ url_for('user.user', user_id = follow.follower.id) }}">
+                            {{ follow.follower.username }}
+                    </a>
+                </td>
+                <td>{{ moment(follow.timestamp).format('L') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="pagination">
+            {{ render_pagination(pagination_followers) }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="tab-pane fade" id="nav-followings" role="tabpanel" aria-labelledby="nav-followings-tab">
+        {% if followings %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>No.</td>
+                    <td>Username</td>
+                    <td>Since</td>
+                </tr>
+            </thead>
+            {% for follow in followings %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <a href="{{ url_for('user.user', user_id = follow.followed.id) }}">
+                        {{ follow.followed.username }}
+                    </a>
+                </td>
+                <td>{{ moment(follow.timestamp).format('L') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="pagination">
+            {{ render_pagination(pagination_followings) }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+    </script>
 {% endblock %}
