@@ -109,8 +109,8 @@ def new_post():
         post = Post(title=title, body=body, category=category, author_id=author_id)
         db.session.add(post)
         db.session.commit()
-        elapost = ElaPost(meta={'id': post.id}, title=post.title, body=post.body)
-        elapost.save(using=ela_client)
+        # elapost = ElaPost(meta={'id': post.id}, title=post.title, body=post.body)
+        # elapost.save(using=ela_client)
         flash('Post created.', 'success')
         return redirect(url_for('post.show_post', post_id=post.id))
     return render_template('post/new_post.html', form=form)
@@ -126,10 +126,10 @@ def edit_post(post_id):
         post.body = form.body.data
         post.category = Category.query.get(form.category.data)
         db.session.commit()
-        elapost = ElaPost.get(id=post.id)
-        elapost.body = post.body
-        elapost.title = post.title
-        elapost.update(using=ela_client)
+        # elapost = ElaPost.get(id=post.id)
+        # elapost.body = post.body
+        # elapost.title = post.title
+        # elapost.update(using=ela_client)
         flash('Post updated.', 'success')
         return redirect(url_for('post.show_post', post_id=post.id))
     form.title.data = post.title
