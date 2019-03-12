@@ -38,6 +38,8 @@ class User(db.Model, UserMixin):
                                 cascade='all, delete-orphan')
     comments = db.relationship('Comment', 
                                 backref='author', lazy='dynamic')
+    notices = db.relationship('Notice', back_populates='receiver', 
+                                cascade='all')
 
     @property
     def password(self):
@@ -115,6 +117,16 @@ class Comment(db.Model):
     post = db.relationship('Post', back_populates='comments')
     replies = db.relationship('Comment', back_populates='replied', cascade='all, delete-orphan')
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
+
+
+class Notice(db.Model):
+    __tablename__ = 'notice'
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    read = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    receiver = db.relationship('User', back_populates='notices')
 
 
 class ElaPost(Document):

@@ -79,6 +79,7 @@
     </div>
     <div class="tab-pane fade" id="nav-followings" role="tabpanel" aria-labelledby="nav-followings-tab">
         {% if followings %}
+        {% if current_user !=  user %}
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -99,6 +100,48 @@
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>No.</td>
+                        <td>Username</td>
+                        <td>Since</td>
+                        <td>Action</td>
+                    </tr>
+                </thead>
+                {% for follow in followings %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <a href="{{ url_for('user.user', user_id = follow.followed.id) }}">
+                            {{ follow.followed.username }}
+                        </a>
+                    </td>
+                    <td>{{ moment(follow.timestamp).format('L') }}</td>
+                    <td>
+                            {% if not current_user|is_follow(follow.followed.username) %}
+                            <form class="inline" method="post"
+                                action="{{ url_for('user.follow', user_id=follow.followed.id, next=request.full_path) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    Follow
+                                </button>
+                            </form>
+                        {% else %}
+                            <form class="inline" method="post"
+                                action="{{ url_for('user.unfollow', user_id=follow.followed.id, next=request.full_path) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Unfollow
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
         <div class="pagination">
             {{ render_pagination(pagination_followings) }}
         </div>

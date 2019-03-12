@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 
 from ablog.forms import CommentForm, SearchForm, PostForm, CategoryForm
 from ablog.models import db, Post, Category, Comment, Follow, ElaPost
-from ablog.utils import redirect_back, ela_client
+from ablog.utils import redirect_back, ela_client, add_comment_notice, add_post_notice
 
 
 post_bp = Blueprint('post', __name__)
@@ -104,11 +104,13 @@ def new_post():
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
-        author_id = current_user.id
+        author_id = current_user._get_current_object().id
         category = Category.query.get(form.category.data)
         post = Post(title=title, body=body, category=category, author_id=author_id)
         db.session.add(post)
         db.session.commit()
+        add_post_notice(current_user._get_current_object(), post.id, current_user._get_current_object().followed)
+        # for pythonanywhere deploy
         # elapost = ElaPost(meta={'id': post.id}, title=post.title, body=post.body)
         # elapost.save(using=ela_client)
         flash('Post created.', 'success')

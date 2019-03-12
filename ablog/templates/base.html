@@ -29,6 +29,16 @@
                 <li class="nav-item {{ 'active' if request.endpoint|be_active('user')}}">
                     <a class="nav-link" href="{{ url_for('user.user', user_id=current_user.id)}}">About Me</a>
                 </li>
+                <li class="nav-item {{ 'active' if request.endpoint|be_active('notices')}}">
+                    <a class="nav-item nav-link" href="{{ url_for('user.show_notices', filter='all') }}">
+                        Message
+                        {% if notices_count %}
+                        <span id="notice-badge" class="{% if notices_count == 0 %} hide {% endif %} 
+                            badge badge-danger" data-href="{{ url_for('user.ajax_notices')}}">{{ notices_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                </li>
                 <li class="nav-item dropdown {{ 'active' if request.endpoint|be_active('new') }}">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     New
@@ -52,7 +62,6 @@
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
-
             <ul class="navbar-nav justify-content-end">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -88,7 +97,7 @@
 </main>
 
 {% block scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>

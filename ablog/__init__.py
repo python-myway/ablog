@@ -17,7 +17,7 @@ from ablog.extensions import (
     bootstrap, login_manager, csrf, ckeditor, mail, 
     moment, toolbar, migrate
     )
-from ablog.models import db, User, Post, Category, Comment, ElaPost
+from ablog.models import db, User, Post, Category, Comment, ElaPost, Notice
 from ablog.settings import config
 from ablog.utils import be_active, is_follow, ela_client
 
@@ -122,7 +122,11 @@ def register_template_context(app):
             outerjoin(stmt, Post.id==stmt.c.post_id).\
             order_by(desc(stmt.c.comment_count)).limit(5).all()
         posts_hotest = [post for (post, _) in raw_hotest]
-        return dict(posts_hotest=posts_hotest, posts_latest=posts_latest)
+        if current_user.is_authenticated:
+            notices_count = Notice.query.with_parent(current_user).filter_by(read=False).count()
+        else:
+            notices_count = None
+        return dict(posts_hotest=posts_hotest, posts_latest=posts_latest, notices_count=notices_count)
 
 
 def register_errors(app):

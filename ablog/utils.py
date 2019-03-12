@@ -5,7 +5,7 @@ except ImportError:
 
 from elasticsearch import Elasticsearch
 from flask import request, redirect, url_for, current_app
-from ablog.models import User
+from ablog.models import db, User, Notice
 
 ela_client = Elasticsearch()
 
@@ -31,6 +31,7 @@ def allowed_file(filename):
 
 
 def be_active(value, pattern='new'):
+    value = value.split('.')[-1]
     if pattern in str(value):
         return True
     return False
@@ -43,3 +44,29 @@ def is_follow(value, username):
     if value.is_following(user):
         return True
     return False
+
+
+def add_follow_notice(follower, receiver):
+    message = 'User <a href="%s">%s</a> followed you.' % \
+              (url_for('user.user', user_id=follower.id), follower.username)
+    notice = Notice(message=message, receiver=receiver)
+    db.session.add(notice)
+    db.session.commit()
+
+
+def add_comment_notice(post_id, receiver, page=1):
+    message = '<a href="%s#comments">This photo</a> has new comment/reply.' % \
+              (url_for('post.show_post', post_id=post_id, page=page))
+    notice = Notice(message=message, receiver=receiver)
+    db.session.add(notice)
+    db.session.commit()
+
+
+def add_post_notice(following, post_id, receiver):
+    message = 'User <a href="%s">%s</a> collected your <a href="%s">photo</a>' % \
+              (url_for('user.user', user_id=following.id),
+               following.username,
+               url_for('post.show_post', post_id=post_id))
+    notice = Notice(message=message, receiver=receiver)
+    db.session.add(notice)
+    db.session.commit()

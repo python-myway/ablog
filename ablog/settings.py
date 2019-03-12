@@ -32,6 +32,7 @@ class BaseConfig(object):
     ABLOG_POST_PER_PAGE = 10
     ABLOG_TABLE_PER_PAGE = 15
     ABLOG_COMMENT_PER_PAGE = 15
+    ABLOG_NOTICE_PER_PAGE = 10
     ABLOG_SLOW_QUERY_THRESHOLD = 1
 
     ABLOG_UPLOAD_PATH = os.path.join(basedir, 'uploads')
