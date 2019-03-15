@@ -149,6 +149,13 @@ def register_errors(app):
 
 def register_commands(app):
     @app.cli.command()
+    def deluser():
+        user = User.query.filter_by(email='1612134263@qq.com').first()
+        db.session.delete(user)
+        db.session.commit()
+        click.echo('delete successfully.')
+
+    @app.cli.command()
     @click.option('--drop', is_flag=True, help='Create after drop.')
     def initdb(drop):
         """Initialize the database."""

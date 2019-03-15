@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     create_time = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+    confirmed = db.Column(db.Boolean, default=False)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     categories = db.relationship('Category', backref='author', lazy='dynamic')
     followed = db.relationship('Follow',

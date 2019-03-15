@@ -31,6 +31,19 @@ class SignupForm(FlaskForm):
             raise ValidationError('email already exist.')
 
 
+class ForgetPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(1, 254), Email()])
+    submit = SubmitField()
+
+
+class ResetPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(1, 254), Email()])
+    password = PasswordField('Password', validators=[
+        DataRequired(), Length(8, 128), EqualTo('password2')])
+    password2 = PasswordField('Confirm password', validators=[DataRequired()])
+    submit = SubmitField()
+
+
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(1, 60)])
     category = SelectField('Category', coerce=int, default=1)
