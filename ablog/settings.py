@@ -21,12 +21,11 @@ class BaseConfig(object):
     CKEDITOR_ENABLE_CSRF = True
     CKEDITOR_FILE_UPLOADER = 'post.upload_image'
 
-    MAIL_SERVER = 'smtp.163.com' # os.getenv('MAIL_SERVER')
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    # MAIL_USE_TLS = True
-    MAIL_USERNAME = 'chengganqin@163.com' #os.getenv('MAIL_USERNAME')
-    MAIL_PASSWORD = 'PattErns--181209' #os.getenv('MAIL_PASSWORD')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = ('Ablog Admin', MAIL_USERNAME)
 
     ABLOG_EMAIL = os.getenv('ABLOG_EMAIL')
