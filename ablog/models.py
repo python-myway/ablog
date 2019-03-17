@@ -2,9 +2,8 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from elasticsearch_dsl import Document, Date, Integer, Keyword, Text, Boolean
 
-from ablog.extensions import db
+from ablog.extensions import db, whooshee
 
 
 class Follow(db.Model):
@@ -16,6 +15,7 @@ class Follow(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+@whooshee.register_model('username')
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -74,10 +74,11 @@ class User(db.Model, UserMixin):
     def is_followed_by(self, user):
         if user.id is None:
             return False
-        return self.followers.filter_by(
+        return self.follower.filter_by(
             follower_id=user.id).first() is not None
 
 
+@whooshee.register_model('name')
 class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
@@ -94,6 +95,7 @@ class Category(db.Model):
         db.session.commit()
 
 
+@whooshee.register_model('title', 'body')
 class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True)
@@ -128,11 +130,3 @@ class Notice(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     receiver = db.relationship('User', back_populates='notices')
-
-
-class ElaPost(Document):
-    title = Text()
-    body = Text()
-
-    class Index:
-        name = 'elapost'

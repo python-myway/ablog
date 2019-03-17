@@ -1,46 +1,45 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pagination %}
+{% from '_macros.html' import macro_post, macro_user, macro_category with context %}
 
-{% block title %}Search Posts{% endblock %}
+{% block title %}Search: {{ q }}{% endblock %}
 
 {% block content %}
-{% if posts %}
-<div class="page-header">
-    <h1>Posts
-        <small class="text-muted">{{ pagination.total }}</small> are found.
-    </h1>
-</div>
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>No.</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Category</th>
-        <th>Create</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    {% for post in posts %}
-    <tr>
-        <td>{{ loop.index + ((page - 1) * config.ABLOG_TABLE_PER_PAGE) }}</td>
-        <td><a href="{{ url_for('post.show_post', post_id=post.id) }}">{{ post.title }}</a></td>
-        <td><a href="{{ url_for('user.user', user_id=post.author.id)}}">{{ post.author.username }}</a></td>
-        <td><a href="{{ url_for('post.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
-        </td>
-        <td>{{ moment(post.timestamp).format('L') }}</td>
-        <td>
-            <a class="btn btn-info btn-sm" href="{{ url_for('post.show_post', post_id=post.id) }}">View</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-<div class="page-footer">{{ render_pagination(pagination) }}</div>
-{% else %}
-<div class="page-header">
-        <h1>Sorry, no post. But you could write one about it.
-            <span ><a class="btn btn-primary btn-sm" href="{{ url_for('.new_post') }}">New Post</a></span>
-        </h1>
-</div>
-{% endif %}
+    <div class="page-header">
+        <h1>Search: {{ q }}</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="nav nav-pills flex-column" role="tablist" aria-orientation="vertical">
+                <a class="nav-item nav-link {% if category == 'post' %}active{% endif %}"
+                   href="{{ url_for('post.search', q=q, category='post') }}">Post</a>
+                <a class="nav-item nav-link {% if category == 'user' %}active{% endif %}"
+                   href="{{ url_for('post.search', q=q, category='user') }}">User</a>
+                <a class="nav-item nav-link {% if category == 'category' %}active{% endif %}"
+                   href="{{ url_for('post.search', q=q, category='category') }}">Category</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {% if results %}
+                <h5>{{ results|length }} results</h5>
+                {% for item in results %}
+                    {% if category == 'post' %}
+                        {{ macro_post(item) }}
+                    {% elif category == 'user' %}
+                        {{ macro_user(item) }}
+                    {% else %}
+                        {{ macro_category(item) }}
+                    {% endif %}
+                {% endfor %}
+
+            {% else %}
+                <h5 class="tip">No results.</h5>
+            {% endif %}
+        </div>
+    </div>
+    {% if results %}
+        <div class="page-footer">
+            {{ render_pagination(pagination, align='right') }}
+        </div>
+    {% endif %}
 {% endblock %}

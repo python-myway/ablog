@@ -15,9 +15,9 @@ from ablog.blueprints.auth import auth_bp
 from ablog.blueprints.post import post_bp
 from ablog.extensions import (
     bootstrap, login_manager, csrf, ckeditor, mail, 
-    moment, toolbar, migrate
+    moment, toolbar, migrate, whooshee
     )
-from ablog.models import db, User, Post, Category, Comment, ElaPost, Notice
+from ablog.models import db, User, Post, Category, Comment, Notice
 from ablog.settings import config
 from ablog.utils import be_active, is_follow, ela_client
 
@@ -98,6 +98,7 @@ def register_extensions(app):
     migrate.init_app(app, db)
     # celery_app.conf.update(app.config)
     # celery_app.app = app
+    whooshee.init_app(app)
 
 
 def register_blueprints(app):
@@ -148,12 +149,6 @@ def register_errors(app):
 
 
 def register_commands(app):
-    @app.cli.command()
-    def deluser():
-        user = User.query.filter_by(email='1612134263@qq.com').first()
-        db.session.delete(user)
-        db.session.commit()
-        click.echo('delete successfully.')
 
     @app.cli.command()
     @click.option('--drop', is_flag=True, help='Create after drop.')
@@ -187,10 +182,6 @@ def register_commands(app):
         fake_comments(comment)
 
         click.echo('Done.')
-
-    @app.cli.command()
-    def initela():
-        ElaPost.init(using=ela_client) 
 
 
 def register_request_handlers(app):

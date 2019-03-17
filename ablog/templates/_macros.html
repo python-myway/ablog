@@ -1,0 +1,50 @@
+{% macro macro_post(post) %}
+<ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('post.show_post', post_id=post.id)}}">{{ post.title }}</a> 
+        <span class="badge badge-primary badge-pill"><a href="{{ url_for('user.user', user_id=post.author.id)}}">by:{{ post.author.username }}</a></span>
+    </li>
+</ul>
+{% endmacro %}
+
+{% macro macro_user(user) %}
+<ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('user.user', user_id=user.id) }}">{{  user.username }}</a> 
+        {{ follow_area(user) }}
+    </li>
+</ul>
+{% endmacro %}
+
+{% macro macro_category(category) %}
+<ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('post.show_category', category_id=category.id) }}">{{  category.name }}</a> 
+        <span class="badge badge-primary badge-pill">posts:{{ category.posts|length }}</a></span>
+    </li>
+</ul>
+{% endmacro %}
+
+{% macro follow_area(user) %}
+    {% if user != current_user %}
+        {% if current_user.is_following(user) %}
+            <form class="inline" method="post"
+                    action="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-sm">Unfollow</button>
+                {% if current_user.is_followed_by(user) %}
+                    <p class="badge badge-light">Follow each other</p>
+                {% endif %}
+            </form>
+        {% else %}
+            <form class="inline" method="post"
+                    action="{{ url_for('user.follow', user_id=user.id, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+                {% if current_user.is_followed_by(user) %}
+                    <p class="badge badge-light">Follows you</p>
+                {% endif %}
+            </form>
+        {% endif %}
+    {% endif %}
+{% endmacro %}

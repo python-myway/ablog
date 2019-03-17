@@ -1,10 +1,9 @@
-from elasticsearch_dsl import Search
 from flask import (render_template, flash, redirect, url_for, request, 
                     current_app, Blueprint, abort, make_response)
 from flask_login import current_user, login_required
 
 from ablog.forms import CommentForm, SearchForm, PostForm, CategoryForm
-from ablog.models import db, Post, Category, Comment, Follow, ElaPost
+from ablog.models import db, Post, Category, Comment, Follow, User
 from ablog.utils import redirect_back, ela_client, add_comment_notice, add_post_notice
 
 
@@ -26,15 +25,22 @@ def home():
 @post_bp.route('/search')
 @login_required
 def search():
-    search = request.args.get('search', '')
+    q = request.args.get('q', '').strip()
+    if q == '':
+        flash('Enter keyword about post, user or category.', 'warning')
+        return redirect_back()
+
+    category = request.args.get('category', 'post')
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['ABLOG_POST_PER_PAGE']
-    raw_result = ElaPost.search(using=ela_client).query('multi_match', query=search, fields=['body', 'title']).execute()
-    ids = [rs.meta.id for rs in raw_result]
-    pagination = Post.query.filter(Post.id.in_(ids))\
-            .order_by(Post.timestamp.desc()).paginate(page, per_page=per_page)
-    posts = pagination.items
-    return render_template('post/search.html', pagination=pagination, posts=posts, page=page)
+    if category == 'user':
+        pagination = User.query.whooshee_search(q).paginate(page, per_page)
+    elif category == 'category':
+        pagination = Category.query.whooshee_search(q).paginate(page, per_page)
+    else:
+        pagination = Post.query.whooshee_search(q).paginate(page, per_page)
+    results = pagination.items
+    return render_template('post/search.html', q=q, results=results, pagination=pagination, category=category)
 
 
 @post_bp.route('/category/<int:category_id>')
@@ -110,9 +116,6 @@ def new_post():
         db.session.add(post)
         db.session.commit()
         add_post_notice(current_user._get_current_object(), post.id, current_user._get_current_object().followed)
-        # for pythonanywhere deploy
-        # elapost = ElaPost(meta={'id': post.id}, title=post.title, body=post.body)
-        # elapost.save(using=ela_client)
         flash('Post created.', 'success')
         return redirect(url_for('post.show_post', post_id=post.id))
     return render_template('post/new_post.html', form=form)
@@ -128,10 +131,6 @@ def edit_post(post_id):
         post.body = form.body.data
         post.category = Category.query.get(form.category.data)
         db.session.commit()
-        # elapost = ElaPost.get(id=post.id)
-        # elapost.body = post.body
-        # elapost.title = post.title
-        # elapost.update(using=ela_client)
         flash('Post updated.', 'success')
         return redirect(url_for('post.show_post', post_id=post.id))
     form.title.data = post.title
@@ -146,8 +145,6 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
     db.session.commit()
-    elapost = ElaPost.get(id=post.id)
-    elapost.delete()
     flash('Post deleted.', 'success')
     return redirect_back()
 

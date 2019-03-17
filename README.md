@@ -4,8 +4,6 @@
 
 This project is hosted on [pythonanywhere](http://misaki001.pythonanywhere.com/) now.
 
-- BUT `Elasticsearch` is not ready in `pythonanywhere`
-
 ## Preview
 
 ![preview](ablog/static/preview.jpg)
@@ -40,7 +38,6 @@ pip3 install -r requirements.txt
 mkdir logs
 touch logs/ablog.log
 flask initdb
-flask initela # must before fakedata
 flask fakedata
 
 # then you can run locally.
@@ -57,7 +54,6 @@ flask run
 > NOTE: the dir `deploy` have all the configs.
 
 - This [blog](https://python-myway.github.io/2017/09/16/%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8/) will teach you how to deploy.
-- [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started-install.html#_installation_example_with_tar)
 
 ## Features(some are to be implemented)
 
@@ -66,23 +62,26 @@ flask run
 - :ballot_box_with_check: add/delete comments
 - :ballot_box_with_check: enable/disable comment
 - :ballot_box_with_check: follow/unfollow bloger
-- :ballot_box_with_check: full text search(body and title)
+- :ballot_box_with_check: full text search
 - :ballot_box_with_check: manage personal profile
 - :ballot_box_with_check: responsive website design
 - :ballot_box_with_check: support rich text
 - :ballot_box_with_check: deploy with Nginx and uwsgi
-- :black_square_button: Message notice
-- :black_square_button: signup confirm email
+- :ballot_box_with_check: Message notice
+- :ballot_box_with_check: signup confirm email(the email box not ready yet, still looking one)
+- :ballot_box_with_check: forget password / reset password
 - :black_square_button: user profile
-- :black_square_button: forget password / reset password button
 - :black_square_button: related articles recommended (based on similar category)
-- :black_square_button: enhance full text search
+- :black_square_button: UI enhance
+- :black_square_button: api
+- :black_square_button: role part
 
 ## Tips
 
 - all configs are located in ablog/settings.py.
 - it's better to write a .flaskenv file in this dir, then put `FLASK_ENV=development` in the file or you can just type `export FLASK_ENV=development` in the cmd.
 - delete a category won't all articles tied in it, these articles will belong to `Category(name=defalut, author=superadmin)`.
+- use `whooshee.reindex()` to manually create index for `whooshee`.
 
 ## Thanks for
 
