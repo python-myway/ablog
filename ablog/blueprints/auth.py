@@ -50,7 +50,7 @@ def signup():
         login_user(user)
         token = generate_token(user=user, operation='CONFIRM')
         send_confirm_email(user=user, token=token)
-        confirm_email_notice(url_for('auth.confirm', token=token), user)
+        confirm_email_notice(user)
         flash('Confirm email sent, Please check your inbox.', 'info')
         return redirect(url_for('auth.login'))
     return render_template('auth/signup.html', form=form)

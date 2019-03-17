@@ -74,9 +74,8 @@ def add_post_notice(following, post_id, receiver):
     db.session.commit()
 
 
-def confirm_email_notice(url, receiver):
-    message = 'Confirm email sent, Please check your inbox. if any problem, \
-        you can also click <a href="%s">here.</a>'.format(url),
+def confirm_email_notice(receiver):
+    message = 'Confirm email sent, Please check your inbox'
     notice = Notice(message=message, receiver=receiver)
     db.session.add(notice)
     db.session.commit()
